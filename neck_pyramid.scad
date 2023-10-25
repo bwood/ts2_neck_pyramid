@@ -4,13 +4,21 @@ frontLength=44;
 sideHalf=sideLength / 2;
 frontHalf=frontLength / 2;
 
+// TODO: Increase the height for the extension accessory?
 neckHeight=21.2;
+// TODO: Change to diameter of extension accessory. Consider raised insignia.
 neckDiameter=15.98;
+// TODO: Implement the base diameter and height.
 
 neckRadius=neckDiameter / 2;
 height=neckHeight+8;
 
 baseOffset=4;
+
+clipX = 5;
+clipY = 2; //TODO: Flex?
+clipZ = 12;
+clipR = clipX;
 
 
 // Remove space for existing neck.
@@ -31,7 +39,6 @@ module pyramid (
         //Uncomment color and remove difference to reveal neck cylinder. 
         //color("Lime") {
         cylinder(h=height, r1=neckRadius, r2=neckRadius);
-        //}
     }
 }
 
@@ -47,9 +54,6 @@ module pyramid01(
         translate([0, 0, neckHeight - 2]) cylinder(h=6, r1=neckRadius + 6, r2=neckRadius + 6);
     }
 }
-
-
-
 
 // Create the base plate
 module base (
@@ -83,9 +87,23 @@ module pyramid02 (
     }   
 }
 
-pyramid02(sideHalf,frontHalf,height,neckRadius);
+//TODO: Reinforce clip base connection.
+module clip(x, y, z) {
+    color("Lime") {
+        cube([x, y, z], center = true);
+        translate([0, 0, (z / 2) - y]) sphere(r = y); 
+    }
+}
 
-translate([0,0,-25]) base(sideHalf,frontHalf,height,neckRadius,baseOffset);
+// pyramid02(sideHalf,frontHalf,height,neckRadius);
+
+bZ = -25;
+translate([0, 13, bZ + (clipZ / 2) + baseOffset]) clip(clipX, clipY, clipZ);
+translate([0, -13, bZ + (clipZ / 2) + baseOffset]) clip(clipX, clipY, clipZ);
+rotate([0, 0, 90]) translate([0, 10, bZ + (clipZ / 2) + baseOffset]) clip(clipX, clipY, clipZ);
+rotate([0, 0, 90]) translate([0, -10, bZ + (clipZ / 2) + baseOffset]) clip(clipX, clipY, clipZ);
+
+translate([0, 0, bZ]) base(sideHalf,frontHalf,height,neckRadius,baseOffset);
 
 
 
