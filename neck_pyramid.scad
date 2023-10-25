@@ -48,8 +48,10 @@ module pyramid01(
     }
 }
 
-pyramid01(sideHalf,frontHalf,height,neckRadius);
 
+
+
+// Create the base plate
 module base (
     sideHalf,
     frontHalf,
@@ -67,6 +69,21 @@ module base (
         translate([0,0, (z / 2) + baseOffset]) cube([y * 2, y * 2, z], center = true);
     }
 }
+
+// Remove the base plate from the pyramid.
+module pyramid02 (
+    sideHalf,
+    frontHalf,
+    height,
+    neckRadius
+) {
+     difference() {
+        pyramid01(sideHalf,frontHalf,height,neckRadius);
+        base(sideHalf,frontHalf,height,neckRadius,baseOffset);
+    }   
+}
+
+pyramid02(sideHalf,frontHalf,height,neckRadius);
 
 translate([0,0,-25]) base(sideHalf,frontHalf,height,neckRadius,baseOffset);
 
