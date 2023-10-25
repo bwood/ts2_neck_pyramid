@@ -17,7 +17,7 @@ baseOffset=4;
 
 clipX = 5;
 clipY = 2; //TODO: Flex?
-clipZ = 12;
+clipZ = 8;
 clipR = clipX;
 
 
@@ -74,6 +74,39 @@ module base (
     }
 }
 
+//TODO: Reinforce clip base connection.
+module clip(x, y, z) {
+    color("Lime") {
+        cube([x, y, z], center = true);
+        translate([0, 0, (z / 2) - y]) sphere(r = y); 
+    }
+}
+
+// Base with clips.
+module baseClips (
+    sideHalf,
+    frontHalf,
+    height,
+    neckRadius,
+    baseOffset,
+    clipX,
+    clipY,
+    clipZ
+) {
+    base(sideHalf,frontHalf,height,neckRadius,baseOffset);
+    
+    translate([0, 13, (clipZ / 2) + baseOffset]) 
+        clip(clipX, clipY, clipZ);
+    translate([0, -13, (clipZ / 2) + baseOffset]) 
+        clip(clipX, clipY, clipZ);
+    rotate([0, 0, 90]) 
+        translate([0, 10, (clipZ / 2) + baseOffset]) 
+            clip(clipX, clipY, clipZ);
+    rotate([0, 0, 90]) 
+        translate([0, -10,(clipZ / 2) + baseOffset]) 
+            clip(clipX, clipY, clipZ);    
+}
+
 // Remove the base plate from the pyramid.
 module pyramid02 (
     sideHalf,
@@ -87,23 +120,23 @@ module pyramid02 (
     }   
 }
 
-//TODO: Reinforce clip base connection.
-module clip(x, y, z) {
-    color("Lime") {
-        cube([x, y, z], center = true);
-        translate([0, 0, (z / 2) - y]) sphere(r = y); 
-    }
-}
 
-// pyramid02(sideHalf,frontHalf,height,neckRadius);
 
-bZ = -25;
-translate([0, 13, bZ + (clipZ / 2) + baseOffset]) clip(clipX, clipY, clipZ);
-translate([0, -13, bZ + (clipZ / 2) + baseOffset]) clip(clipX, clipY, clipZ);
-rotate([0, 0, 90]) translate([0, 10, bZ + (clipZ / 2) + baseOffset]) clip(clipX, clipY, clipZ);
-rotate([0, 0, 90]) translate([0, -10, bZ + (clipZ / 2) + baseOffset]) clip(clipX, clipY, clipZ);
+pyramid02(sideHalf,frontHalf,height,neckRadius);
 
-translate([0, 0, bZ]) base(sideHalf,frontHalf,height,neckRadius,baseOffset);
+bZ = -0;
+
+translate([0, 0, bZ]) 
+    baseClips(
+        sideHalf,
+        frontHalf,
+        height,
+        neckRadius,
+        baseOffset,
+        clipX,
+        clipY,
+        clipZ
+        );
 
 
 
