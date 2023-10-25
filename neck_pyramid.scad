@@ -8,10 +8,12 @@ neckHeight=21.2;
 neckDiameter=15.98;
 
 neckRadius=neckDiameter / 2;
-
 height=neckHeight+8;
 
+baseOffset=4;
 
+
+// Remove space for existing neck.
 module pyramid (
     sideHalf,
     frontHalf,
@@ -34,7 +36,40 @@ module pyramid (
 }
 
 // Remove points from pyramid support.
-difference() {
-    pyramid(sideHalf,frontHalf,height,neckRadius);
-    translate([0, 0, neckHeight - 2]) cylinder(h=6, r1=neckRadius + 6, r2=neckRadius + 6);
+module pyramid01(
+    sideHalf,
+    frontHalf,
+    height,
+    neckRadius
+) {
+    difference() {
+        pyramid(sideHalf,frontHalf,height,neckRadius);
+        translate([0, 0, neckHeight - 2]) cylinder(h=6, r1=neckRadius + 6, r2=neckRadius + 6);
+    }
 }
+
+pyramid01(sideHalf,frontHalf,height,neckRadius);
+
+module base (
+    sideHalf,
+    frontHalf,
+    height,
+    neckRadius,
+    baseOffset
+) {
+
+    x = sideHalf - baseOffset;
+    y = frontHalf - baseOffset;
+    z = height - baseOffset;
+
+    difference() {
+        pyramid(x,y,z,neckRadius);
+        translate([0,0, (z / 2) + baseOffset]) cube([y * 2, y * 2, z], center = true);
+    }
+}
+
+translate([0,0,-25]) base(sideHalf,frontHalf,height,neckRadius,baseOffset);
+
+
+
+
