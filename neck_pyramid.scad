@@ -99,12 +99,14 @@ module baseClips (
         clip(clipX, clipY, clipZ);
     translate([0, -13, (clipZ / 2) + baseOffset]) 
         clip(clipX, clipY, clipZ);
-    rotate([0, 0, 90]) 
-        translate([0, 10, (clipZ / 2) + baseOffset]) 
-            clip(clipX, clipY, clipZ);
-    rotate([0, 0, 90]) 
-        translate([0, -10,(clipZ / 2) + baseOffset]) 
-            clip(clipX, clipY, clipZ);    
+
+// For simplicty and ease of removal, try just 2 clips first. 
+//    rotate([0, 0, 90]) 
+//        translate([0, 10.5, (clipZ / 2) + baseOffset]) 
+//            clip(clipX, clipY, clipZ);
+//    rotate([0, 0, 90]) 
+//        translate([0, -10.5,(clipZ / 2) + baseOffset]) 
+//            clip(clipX, clipY, clipZ);    
 }
 
 // Remove the base plate from the pyramid.
@@ -116,6 +118,8 @@ module pyramid02 (
 ) {
      difference() {
         pyramid01(sideHalf,frontHalf,height,neckRadius);
+        
+        //TODO: BaseClipsNeg: internal ridge for bump. Extra space behind the clip to allow for flex
         base(sideHalf,frontHalf,height,neckRadius,baseOffset);
     }   
 }
@@ -124,7 +128,7 @@ module pyramid02 (
 
 pyramid02(sideHalf,frontHalf,height,neckRadius);
 
-bZ = -0;
+bZ = 0;
 
 translate([0, 0, bZ]) 
     baseClips(
