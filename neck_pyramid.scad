@@ -11,11 +11,12 @@ neckBaseHeight=3;
 
 // TODO: Increase the height for the extension accessory?
 neckHeight=21.2;
-// TODO: Change to diameter of extension accessory. Consider raised insignia.
-neckDiameter=15.98;
-// TODO: Implement the base diameter and height.
-
-neckRadius=neckDiameter / 2;
+// Neck extension accessory bottom diameter.
+neckDiameterBottom=19.55;
+// Neck extension accessory top diameter just before cutout for mouthpiece.
+neckDiameterTop=18.25;
+neckRadiusBottom=neckDiameterBottom / 2;
+neckRadiusTop=neckDiameterTop / 2;
 height=neckHeight+8;
 
 baseOffset=4;
@@ -31,7 +32,8 @@ module pyramid (
     sideHalf,
     frontHalf,
     height,
-    neckRadius
+    neckRadiusBottom,
+    neckRadiusTop
 ) {
     difference() {
         polyhedron(
@@ -43,7 +45,7 @@ module pyramid (
         
         //Uncomment color and remove difference to reveal neck cylinder. 
         //color("Lime") {
-        cylinder(h=height, r1=neckRadius, r2=neckRadius);
+        cylinder(h=height, r1=neckRadiusBottom, r2=neckRadiusTop);
     }
 }
 
@@ -52,11 +54,12 @@ module pyramid01(
     sideHalf,
     frontHalf,
     height,
-    neckRadius
+    neckRadiusBottom,
+    neckRadiusTop
 ) {
     difference() {
-        pyramid(sideHalf,frontHalf,height,neckRadius);
-        translate([0, 0, neckHeight - 2]) cylinder(h=6, r1=neckRadius + 6, r2=neckRadius + 6);
+        pyramid(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop);
+        translate([0, 0, neckHeight - 2]) cylinder(h=6, r1=neckRadiusBottom + 6, r2=neckRadiusTop + 6);
     }
 }
 
@@ -65,7 +68,8 @@ module base (
     sideHalf,
     frontHalf,
     height,
-    neckRadius,
+    neckRadiusBottom,
+    neckRadiusTop,
     baseOffset
 ) {
 
@@ -74,7 +78,7 @@ module base (
     z = height - baseOffset;
 
     difference() {
-        pyramid(x,y,z,neckRadius);
+        pyramid(x,y,z,neckRadiusBottom,neckRadiusTop);
         translate([0,0, (z / 2) + baseOffset]) cube([y * 2, y * 2, z], center = true);
     }        
 }
@@ -84,14 +88,15 @@ module baseNeckBase(
     sideHalf,
     frontHalf,
     height,
-    neckRadius,
+    neckRadiusBottom,
+    neckRadiusTop,
     neckBaseHeight,
     neckBaseRadius,
     baseOffset
 ) {
     // remove short cylinder for neck base
     difference() {
-        base(sideHalf,frontHalf,height,neckRadius,baseOffset);
+        base(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop,baseOffset);
         cylinder(h=neckBaseHeight, r1=neckBaseRadius, r2=neckBaseRadius);
     }
 }
@@ -109,7 +114,8 @@ module baseClips (
     sideHalf,
     frontHalf,
     height,
-    neckRadius,
+    neckRadiusBottom,
+    neckRadiusTop,
     neckBaseHeight,
     neckBaseRadius,
     baseOffset,
@@ -117,7 +123,7 @@ module baseClips (
     clipY,
     clipZ
 ) {
-    baseNeckBase(sideHalf,frontHalf,height,neckRadius,neckBaseHeight,neckBaseRadius,baseOffset);
+    baseNeckBase(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop,neckBaseHeight,neckBaseRadius,baseOffset);
     
     translate([0, 13, (clipZ / 2) + baseOffset]) 
         clip(clipX, clipY, clipZ);
@@ -138,20 +144,21 @@ module pyramid02 (
     sideHalf,
     frontHalf,
     height,
-    neckRadius
+    neckRadiusBottom,
+    neckRadiusTop
 ) {
      difference() {
-        pyramid01(sideHalf,frontHalf,height,neckRadius);
+        pyramid01(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop);
         
         //TODO: BaseClipsNeg: internal ridge for bump. Extra space behind the clip to allow for flex
         // Remove base, not baseNeckBase. The latter would leave material where the neck base ring was removed.
-        base(sideHalf,frontHalf,height,neckRadius,baseOffset);
+        base(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop,baseOffset);
     }   
 }
 
 
 
-pyramid02(sideHalf,frontHalf,height,neckRadius);
+pyramid02(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop);
 
 bZ = -25;
 
@@ -160,7 +167,8 @@ translate([0, 0, bZ])
         sideHalf,
         frontHalf,
         height,
-        neckRadius,
+        neckRadiusBottom,
+        neckRadiusTop,
         neckBaseHeight,
         neckBaseRadius,
         baseOffset,
