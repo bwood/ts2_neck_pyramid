@@ -7,13 +7,14 @@ frontHalf=frontLength / 2;
 
 // TODO: Increase the height for the extension accessory?
 neckHeight=21.2;
+height=neckHeight+8;
+
 // Neck extension accessory bottom diameter.
 neckDiameterBottom=19.55;
 // Neck extension accessory top diameter just before cutout for mouthpiece.
 neckDiameterTop=18.25;
 neckRadiusBottom=neckDiameterBottom / 2;
 neckRadiusTop=neckDiameterTop / 2;
-height=neckHeight+8;
 
 baseOffset=4;
 
@@ -27,10 +28,11 @@ clipR = clipX;
 module pyramid (
     sideHalf,
     frontHalf,
-    height,
-    neckRadiusBottom,
-    neckRadiusTop
+    height
 ) {
+
+
+    
     difference() {
         polyhedron(
           points=[ [sideHalf,frontHalf,0],[sideHalf,-frontHalf,0],[-sideHalf,-frontHalf,0],[-sideHalf,frontHalf,0], // the four points at base
@@ -49,12 +51,12 @@ module pyramid (
 module pyramid01(
     sideHalf,
     frontHalf,
-    height,
-    neckRadiusBottom,
-    neckRadiusTop
+    height
 ) {
+    
+    
     difference() {
-        pyramid(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop);
+        pyramid(sideHalf,frontHalf,height);
         translate([0, 0, neckHeight - 2]) cylinder(h=6, r1=neckRadiusBottom + 6, r2=neckRadiusTop + 6);
     }
 }
@@ -64,8 +66,6 @@ module base (
     sideHalf,
     frontHalf,
     height,
-    neckRadiusBottom,
-    neckRadiusTop,
     baseOffset
 ) {
 
@@ -74,7 +74,7 @@ module base (
     z = height - baseOffset;
 
     difference() {
-        pyramid(x,y,z,neckRadiusBottom,neckRadiusTop);
+        pyramid(x,y,z);
         translate([0,0, (z / 2) + baseOffset]) cube([y * 2, y * 2, z], center = true);
     }        
 }
@@ -84,8 +84,6 @@ module baseNeckBase(
     sideHalf,
     frontHalf,
     height,
-    neckRadiusBottom,
-    neckRadiusTop,
     baseOffset
 ) {
     
@@ -97,7 +95,7 @@ module baseNeckBase(
 
     // remove short cylinder for neck base
     difference() {
-        base(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop,baseOffset);
+        base(sideHalf,frontHalf,height,baseOffset);
         cylinder(h=neckBaseHeight, r1=neckBaseRadius, r2=neckBaseRadius);
     }
 }
@@ -115,14 +113,12 @@ module baseClips (
     sideHalf,
     frontHalf,
     height,
-    neckRadiusBottom,
-    neckRadiusTop,
     baseOffset,
     clipX,
     clipY,
     clipZ
 ) {
-    baseNeckBase(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop,baseOffset);
+    baseNeckBase(sideHalf,frontHalf,height,baseOffset);
     
     translate([0, 13, (clipZ / 2) + baseOffset]) 
         clip(clipX, clipY, clipZ);
@@ -142,22 +138,20 @@ module baseClips (
 module pyramid02 (
     sideHalf,
     frontHalf,
-    height,
-    neckRadiusBottom,
-    neckRadiusTop
+    height
 ) {
      difference() {
-        pyramid01(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop);
+        pyramid01(sideHalf,frontHalf,height);
         
         //TODO: BaseClipsNeg: internal ridge for bump. Extra space behind the clip to allow for flex
         // Remove base, not baseNeckBase. The latter would leave material where the neck base ring was removed.
-        base(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop,baseOffset);
+        base(sideHalf,frontHalf,height,baseOffset);
     }   
 }
 
 
 
-pyramid02(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop);
+pyramid02(sideHalf,frontHalf,height);
 
 bZ = -25;
 
@@ -166,8 +160,6 @@ translate([0, 0, bZ])
         sideHalf,
         frontHalf,
         height,
-        neckRadiusBottom,
-        neckRadiusTop,
         baseOffset,
         clipX,
         clipY,
