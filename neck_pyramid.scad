@@ -4,10 +4,6 @@ frontLength=44;
 sideHalf=sideLength / 2;
 frontHalf=frontLength / 2;
 
-//There is a raised ring at the base of the existing TS2 neck.  We will call this the "neck base".
-neckBaseDiameter=21.65;
-neckBaseRadius=neckBaseDiameter / 2;
-neckBaseHeight=3;
 
 // TODO: Increase the height for the extension accessory?
 neckHeight=21.2;
@@ -90,10 +86,15 @@ module baseNeckBase(
     height,
     neckRadiusBottom,
     neckRadiusTop,
-    neckBaseHeight,
-    neckBaseRadius,
     baseOffset
 ) {
+    
+    // Local Variables
+    // There is a raised ring at the base of the existing TS2 neck.  We will call this the "neck base".
+    neckBaseDiameter=21.65;
+    neckBaseRadius=neckBaseDiameter / 2;
+    neckBaseHeight=3;
+
     // remove short cylinder for neck base
     difference() {
         base(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop,baseOffset);
@@ -116,14 +117,12 @@ module baseClips (
     height,
     neckRadiusBottom,
     neckRadiusTop,
-    neckBaseHeight,
-    neckBaseRadius,
     baseOffset,
     clipX,
     clipY,
     clipZ
 ) {
-    baseNeckBase(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop,neckBaseHeight,neckBaseRadius,baseOffset);
+    baseNeckBase(sideHalf,frontHalf,height,neckRadiusBottom,neckRadiusTop,baseOffset);
     
     translate([0, 13, (clipZ / 2) + baseOffset]) 
         clip(clipX, clipY, clipZ);
@@ -169,8 +168,6 @@ translate([0, 0, bZ])
         height,
         neckRadiusBottom,
         neckRadiusTop,
-        neckBaseHeight,
-        neckBaseRadius,
         baseOffset,
         clipX,
         clipY,
