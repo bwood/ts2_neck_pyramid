@@ -4,6 +4,11 @@ frontLength=44;
 sideHalf=sideLength / 2;
 frontHalf=frontLength / 2;
 
+//There is a raised ring at the base of the existing TS2 neck.  We will call this the "neck base".
+neckBaseDiameter=21.65;
+neckBaseRadius=neckBaseDiameter / 2;
+neckBaseHeight=3;
+
 // TODO: Increase the height for the extension accessory?
 neckHeight=21.2;
 // TODO: Change to diameter of extension accessory. Consider raised insignia.
@@ -71,6 +76,23 @@ module base (
     difference() {
         pyramid(x,y,z,neckRadius);
         translate([0,0, (z / 2) + baseOffset]) cube([y * 2, y * 2, z], center = true);
+    }        
+}
+
+// The base with the neck base removed.
+module baseNeckBase(
+    sideHalf,
+    frontHalf,
+    height,
+    neckRadius,
+    neckBaseHeight,
+    neckBaseRadius,
+    baseOffset
+) {
+    // remove short cylinder for neck base
+    difference() {
+        base(sideHalf,frontHalf,height,neckRadius,baseOffset);
+        cylinder(h=neckBaseHeight, r1=neckBaseRadius, r2=neckBaseRadius);
     }
 }
 
@@ -88,12 +110,14 @@ module baseClips (
     frontHalf,
     height,
     neckRadius,
+    neckBaseHeight,
+    neckBaseRadius,
     baseOffset,
     clipX,
     clipY,
     clipZ
 ) {
-    base(sideHalf,frontHalf,height,neckRadius,baseOffset);
+    baseNeckBase(sideHalf,frontHalf,height,neckRadius,neckBaseHeight,neckBaseRadius,baseOffset);
     
     translate([0, 13, (clipZ / 2) + baseOffset]) 
         clip(clipX, clipY, clipZ);
@@ -120,6 +144,7 @@ module pyramid02 (
         pyramid01(sideHalf,frontHalf,height,neckRadius);
         
         //TODO: BaseClipsNeg: internal ridge for bump. Extra space behind the clip to allow for flex
+        // Remove base, not baseNeckBase. The latter would leave material where the neck base ring was removed.
         base(sideHalf,frontHalf,height,neckRadius,baseOffset);
     }   
 }
@@ -128,7 +153,7 @@ module pyramid02 (
 
 pyramid02(sideHalf,frontHalf,height,neckRadius);
 
-bZ = 0;
+bZ = -25;
 
 translate([0, 0, bZ]) 
     baseClips(
@@ -136,6 +161,8 @@ translate([0, 0, bZ])
         frontHalf,
         height,
         neckRadius,
+        neckBaseHeight,
+        neckBaseRadius,
         baseOffset,
         clipX,
         clipY,
