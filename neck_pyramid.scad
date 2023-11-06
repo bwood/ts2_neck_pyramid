@@ -18,10 +18,8 @@ neckRadiusTop=neckDiameterTop / 2;
 
 baseOffset=4;
 
-clipX = 5;
-clipY = 2; //TODO: Flex?
-clipZ = 8;
-clipR = clipX;
+
+
 
 
 // Remove space for existing neck.
@@ -30,8 +28,6 @@ module pyramid (
     frontHalf,
     height
 ) {
-
-
     
     difference() {
         polyhedron(
@@ -101,10 +97,31 @@ module baseNeckBase(
 }
 
 //TODO: Reinforce clip base connection.
-module clip(x, y, z) {
+module clip0(x, y, z) {
     color("Lime") {
         cube([x, y, z], center = true);
         translate([0, 0, (z / 2) - y]) sphere(r = y); 
+    }
+}
+
+clipHeight = 8;
+clipWidth = 2; 
+clipThickness = 2; 
+
+// Better clip with fillets
+module clip(h, w, t) {
+    color("Lime") {
+        rotate([90, 0, 0]) {
+            linear_extrude(t/2) {
+                translate([0, w/2, 0])
+                    offset(-2) offset(2) {
+                        square([h, w], center = true);
+                        translate([0, (h/2) + (w/2), 0])
+                            // Bottom square
+                            square([w, h], center = true);
+                    }
+            }
+        }
     }
 }
 
@@ -161,11 +178,12 @@ translate([0, 0, bZ])
         frontHalf,
         height,
         baseOffset,
-        clipX,
-        clipY,
-        clipZ
+        clipHeight,
+        clipWidth,
+        clipThickness
         );
+//
 
-
+//clip(clipHeight, clipWidth, clipThickness);
 
 
